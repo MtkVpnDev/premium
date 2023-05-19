@@ -96,7 +96,6 @@ sudo cp /etc/apt/sources.list_backup /etc/apt/sources.list
 }
 
 
-
 install_openvpn()
 {
 clear
@@ -254,8 +253,6 @@ verb 3' > /etc/openvpn/server3.conf
 
 sed -i "s|PORT_TCP|$PORT_TCP|g" /etc/openvpn/server3.conf
 
-
-
 cat <<\EOM >/etc/openvpn/login/config.sh
 #!/bin/bash
 HOST='DBHOST'
@@ -268,8 +265,6 @@ sed -i "s|DBHOST|$HOST|g" /etc/openvpn/login/config.sh
 sed -i "s|DBUSER|$USER|g" /etc/openvpn/login/config.sh
 sed -i "s|DBPASS|$PASS|g" /etc/openvpn/login/config.sh
 sed -i "s|DBNAME|$DBNAME|g" /etc/openvpn/login/config.sh
-
-
 
 EOM
 
@@ -314,11 +309,6 @@ timestamp="$(date +'%FT%TZ')"
 
 mysql -u $USER -p$PASS -D $DB -h $HOST -e "UPDATE users SET is_active='0' WHERE user_name='$common_name' "
 EOM
-
-
-
-
-
 
 cat << EOF > /etc/openvpn/easy-rsa/keys/ca.crt
 -----BEGIN CERTIFICATE-----
@@ -512,7 +502,6 @@ chmod 755 /etc/openvpn/login/auth_vpn
 }&>/dev/null
 }
 
-
 install_firewall_kvm(){
   {
 echo -e "\033[01;31m Configure Sysctl \033[0m"
@@ -539,20 +528,6 @@ echo '* soft nofile 512000
 * hard nofile 512000' >> /etc/security/limits.conf
 ulimit -n 512000
 
-iptables -t nat -A POSTROUTING -s 10.10.0.0/22 -o enp1s0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.10.0.0/22 -o enp1s0 -j SNAT --to-source "$(curl ipecho.net/plain)"
-iptables -t nat -A POSTROUTING -s 10.10.0.0/22 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.10.0.0/22 -o eth0 -j SNAT --to-source "$(curl ipecho.net/plain)"
-iptables -t nat -A POSTROUTING -s 10.10.0.0/22 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.10.0.0/22 -o ens3 -j SNAT --to-source "$(curl ipecho.net/plain)"
-
-iptables -t nat -A POSTROUTING -s 10.20.0.0/22 -o enp1s0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.20.0.0/22 -o enp1s0 -j SNAT --to-source "$(curl ipecho.net/plain)"
-iptables -t nat -A POSTROUTING -s 10.20.0.0/22 -o eth0 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.20.0.0/22 -o eth0 -j SNAT --to-source "$(curl ipecho.net/plain)"
-iptables -t nat -A POSTROUTING -s 10.20.0.0/22 -o ens3 -j MASQUERADE
-iptables -t nat -A POSTROUTING -s 10.20.0.0/22 -o ens3 -j SNAT --to-source "$(curl ipecho.net/plain)"
-
 iptables -t nat -A POSTROUTING -s 10.30.0.0/22 -o eth0 -j MASQUERADE
 iptables -t nat -A POSTROUTING -s 10.30.0.0/22 -o eth0 -j SNAT --to-source "$(curl ipecho.net/plain)"
 iptables -t nat -A POSTROUTING -s 10.30.0.0/22 -o ens3 -j MASQUERADE
@@ -566,6 +541,7 @@ ip6tables-save > /etc/iptables_rules.v6
 sysctl -p
   }&>/dev/null
 }
+
 install_stunnel() {
   {
 cd /etc/stunnel/ || exit
@@ -647,11 +623,11 @@ sudo service stunnel4 restart
 
 install_rclocal(){
   {
-    sudo systemctl restart stunnel4
-    sudo systemctl enable openvpn@server.service
-    sudo systemctl start openvpn@server.service
-    sudo systemctl enable openvpn@server2.service
-    sudo systemctl start openvpn@server2.service    
+sudo systemctl restart stunnel4
+sudo systemctl enable openvpn@server.service
+sudo systemctl start openvpn@server.service
+sudo systemctl enable openvpn@server2.service
+udo systemctl start openvpn@server2.service    
     
     echo "[Unit]
 Description=Tknetwork service
@@ -673,10 +649,10 @@ systemctl restart openvpn@server.service
 systemctl restart openvpn@server2.service
 screen -dmS socks python /etc/socks.py
 exit 0' >> /etc/rc.local
-    sudo chmod +x /etc/rc.local
-    systemctl daemon-reload
-    sudo systemctl enable Tknetwork
-    sudo systemctl start Tknetwork.service
+sudo chmod +x /etc/rc.local
+systemctl daemon-reload
+sudo systemctl enable Tknetwork
+sudo systemctl start Tknetwork.service
   }&>/dev/null
 }
 
